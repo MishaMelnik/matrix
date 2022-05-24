@@ -1,0 +1,115 @@
+@mixin greenBlock {
+  background-color: #47661e;
+  border-radius: 15px;
+  color: #fff;
+  height: fit-content;
+}
+
+.showTable {
+  padding: 30px 20px;
+  width: fit-content;
+  margin: 0 auto;
+  background-color: #94d341;
+  margin-top: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px -3px rgba(0,0,0,0.75);
+  position: relative;
+
+  &--none {
+    display: none;
+  }
+
+  &__list {
+    border-radius: 15px;
+  }
+
+  &__item {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+
+  &__amount {
+    font-size: 20px;
+    display: inline-block;
+    margin: 0 5px;
+    border: 0;
+    padding: 0;
+    width: 80px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 50);
+    position: relative;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &:active {
+      color: green;
+      font-weight: bold;
+      box-shadow: inset 0 0 10px 1px rgba(0,0,0,0.75);
+      border-radius: 10px;
+    }
+
+    &--near {
+      background-color: #2b648fad;
+    }
+  }
+
+  &__procent {
+    position: absolute;
+    width: 100%;
+    background-color: #2b648fad;
+    bottom: 0;
+    left: 0;
+    font-size: 0;
+
+    &--none {
+      display: none;
+    }
+  }
+
+  &__sum {
+    @include greenBlock;
+    padding: 5px 10px;
+    width: 60px;
+    margin: 0 10px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__remove {
+    background-color: rgba(255, 255, 255, 0);
+    border: 0;
+    color: rgb(255, 0, 0);
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 50%;
+    transition: 0.5s;
+
+    &:hover {
+      background-color: rgb(255, 0, 0);
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+
+  &__average {
+    margin-top: 10px;
+    justify-content: flex-start;
+    border: none;
+    position: relative;
+
+    &-item {
+      @include greenBlock;
+    }
+
+  }
+}

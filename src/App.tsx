@@ -1,12 +1,13 @@
 import React from 'react';
 import Platform from './components/Platform/Platform';
-import Content from './components/Content/Content';
+import Matrix from './components/Matrix/Matrix';
+import './App.scss';
 
 const App = () => {
   return (
     <div className="app">
       <Platform />
-      <Content />
+      <Matrix />
     </div>
   );
 };
