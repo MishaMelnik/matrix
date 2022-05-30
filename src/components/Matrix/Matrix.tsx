@@ -3,65 +3,41 @@ import './Matrix.scss';
 import getTable from '../../store/appStores/matrixStore/selector';
 import { useSelector } from 'react-redux';
 import matrixActions from '../../store/appStores/matrixStore/matrixAction';
-import { matrix, form } from '../../models/models';
+import percentCalculation from '../function/percentCalculation';
+import { matrix } from '../../models/models';
 
 const Matrix = () => {
-  const table = useSelector(getTable);
-  const [average, handleAverage] = useState([]);
-  const [column, setColumn] = useState([]);
+  const table: Array<Array<matrix>> = useSelector(getTable);
+  const [average, handleAverage] = useState<Array<number>>([]);
+  const [column, setColumn] = useState<Array<number>>([]);
+  const [showCell, setShowCell] = useState(false);
+  const [showPercent, setShowPercent] = useState(false);
   const matrix = [...table];
   const newTabl = matrix.flat(2);
   const newMatrix = newTabl[0];
-  console.log(newTabl);
+  console.log(matrix);
 
-  const deleteRowFromArr = ({ rowId }: matrix) => {
+  const deleteRowFromArr = (rowId: number) => {
     const newTable = table.slice(0);
     newTable.splice(rowId - 1, 1);
     matrixActions.deleteRow(newTable);
   };
-  // const showPercent = (event: any) => {
-  //   const newTable = [...table];
-  //   const i = event.target.id;
-  //
-  //   for (let j = 0; j < newTable[i].length; j += 1) {
-  //     newTable[i][j].showPercent = true;
-  //   }
-  //   matrixActions.setTable(newTable);
-  // };
-  // const endShowPercent = () => {
-  //   const newTable = [...table];
-  //
-  //   for (let i = 0; i < newTable.length; i += 1) {
-  //     for (let j = 0; j < newTable[i].length; j += 1) {
-  //       newTable[i][j].showPercent = false;
-  //     }
-  //   }
-  //   matrixActions.setTable(newTable);
-  // };
-  const amountClick = (event: any) => {
-    const id = event.target.value;
-    console.log(event.target);
-    const newTable = [...table];
-
-    for (let i = 0; i < newTable.length; i += 1) {
-      for (let j = 0; j < newTable[i].length; j += 1) {
-        if (+newTable[i][j].id === +id) {
-          newTable[i][j].amount += 1;
+  const showRowPercent = (index: number) => {
+    setShowPercent(true);
+    console.log(index);
+  };
+  const amountClick = (id: number) => {
+    for (let i = 0; i < matrix.length; i += 1) {
+      for (let j = 0; j < matrix[i].length; j += 1) {
+        if (+matrix[i][j].id === +id) {
+          matrix[i][j].amount += 1;
         }
       }
     }
-    percentCalculation(newTable);
+    percentCalculation(matrix);
   };
-  const hoverAmount = (event: any) => {
-    console.log('MouseEnter');
-    // const arr: any = [];
-    // newTabl.forEach((num) => arr.push(+num.amount));
-    // arr.sort((a: number, b: number) => a - b);
-    // const index = arr.indexOf(+event.target.innerText);
-    // // const el = arr[index];
-    // // console.log(el);
-    // console.log(index);
-    // console.log(arr);
+  const hoverAmount = () => {
+    setShowCell(true);
     const hashAmountDelta = newTabl
       .map((item) => ({
         ...item,
@@ -78,134 +54,80 @@ const Matrix = () => {
       })
       .slice(0, newMatrix.cell);
     console.log(hashAmountDelta);
-    console.log(newTabl);
-    //
-    // const newTable = [...table];
-    // const arr: any = [];
-    // newTable.forEach((row: any) => row.forEach((num: any) => arr.push(+num.amount)));
-    // arr.sort((a: number, b: number) => a - b);
-    // const index = arr.indexOf(+event.target.innerText);
-    // console.log(arr);
-    // console.log(index);
-    //
-    // const a = arr[index + 1];
-    // const b = arr[index - 1];
-    // console.log(a);
-    // console.log(b);
-    //
-    // for (let i = 0; i < newTable.length; i += 1) {
-    //   for (let j = 0; j < newTable[i].length; j += 1) {
-    //     if (newTable[i][j].amount === a || newTable[i][j].amount === b) {
-    //       newTable[i][j].hover = true;
-    //     }
-    //   }
-    // }
-    // matrixActions.setTable(newTable);
-  };
-  const endHoverAmount = () => {
-    console.log('MouseLeave');
-    // const newTable = [...table];
-    //
-    // for (let i = 0; i < newTable.length; i += 1) {
-    //   for (let j = 0; j < newTable[i].length; j += 1) {
-    //     newTable[i][j].hover = false;
-    //   }
-    // }
-    //
-    // matrixActions.setTable(newTable);
   };
   useEffect(() => {
     if (table.length > 0) {
-      const newAverage: any = [];
+      const newAverage = [];
       for (let i = 0; i < table[0].length; i += 1) {
-        const a = table.reduce((acc: matrix, current: any) => acc + current[i].amount, 0);
+        const a = table.reduce((acc, current) => acc + current[i].amount, 0);
         newAverage.push(Math.round(a / table.length));
       }
-
       handleAverage(newAverage);
     }
-  }, [table]);
-  useEffect(() => {
     if (table.length > 0) {
-      const newColumn: any = [];
+      const newColumn = [];
       for (let i = 1; i <= newMatrix?.columns; i += 1) {
         newColumn.push(i);
       }
       setColumn(newColumn);
     }
   }, [table]);
-  // eslint-disable-next-line require-jsdoc
-  function percentCalculation(newTab: matrix[][]) {
-    const newTable = [...newTab];
-
-    for (let i = 0; i < newTable.length; i += 1) {
-      const sum = newTab[i].reduce((acc, num) => acc + +num.amount, 0);
-
-      for (let j = 0; j < newTable[i].length; j += 1) {
-        newTable[i][j].percent = ((+newTable[i][j].amount / sum) * 100).toFixed(1);
-      }
-    }
-
-    matrixActions.setTable(newTable);
-  }
 
   return (
     <div className={table.length > 0 ? `showTable` : `showTable-none`}>
       <ul className="showTable_list">
         <span className="showTable_span">№</span>
         <li className="showTable_rowNumber">
-          {matrix?.map((row: any, index) => (
+          {matrix?.map((row, index) => (
             <span key={Math.random()} className="showTable_rowSpan showTable_rowAverage-item">
               {index + 1}
             </span>
           ))}
         </li>
         <li className="showTable_item showTable_average">
-          {column?.map((column: number) => (
+          {column?.map((column) => (
             <span key={Math.random()} className="showTable_amount showTable_average-item">
               {column}
             </span>
           ))}
         </li>
         <span className="showTable_sums">Sum</span>
-        {table?.map((row: any, i: number) => (
+        {table?.map((row, index) => (
           <li className="showTable_item" key={Math.random()}>
-            {row?.map((show: form) => (
+            {row?.map((show) => (
               <div className="showTable_row" key={Math.random()}>
                 <button
                   // value={show.id}
-                  id={i.toString()}
+                  id={show.id.toString()}
+                  onMouseEnter={() => hoverAmount()}
+                  onMouseLeave={() => setShowCell(false)}
                   className={
-                    !show.hover ? 'showTable_amount' : 'showTable_amount showTable_amount-near'
+                    !showCell ? 'showTable_amount' : 'showTable_amount showTable_amount-near'
                   }
-                  onClick={(event) => amountClick(event)}
+                  onClick={() => amountClick(show.id)}
+                  // onClick={(event) => amountClick(event)}
                 >
-                  <span onMouseEnter={(e) => hoverAmount(e)} onMouseLeave={() => endHoverAmount()}>
-                    {!show.showPercent ? show.amount : `${show.percent} %`}
-                  </span>
+                  <span>{!showPercent ? show.amount : `${show.percent} %`}</span>
                   <div
-                    style={{
-                      height: `${+show.percent}%`,
-                    }}
-                    className={!show.showPercent ? 'showTable_percent-none' : 'showTable_percent'}
+                    style={{ height: `${+show.percent}%` }}
+                    className={!showPercent ? 'showTable_percent-none' : 'showTable_percent'}
                   ></div>
                 </button>
               </div>
             ))}
             <span
               className="showTable_sum"
-              id={i.toString()}
-              // onMouseEnter={(e) => showPercent(e)}
-              // onMouseOver={() => endShowPercent()}
+              id={index.toString()}
+              onMouseEnter={() => showRowPercent(index)}
+              onMouseLeave={() => setShowPercent(false)}
             >
-              {row?.reduce((acc: number, current: matrix) => acc + current.amount, 0)}
+              {row?.reduce((acc, current) => acc + current.amount, 0)}
             </span>
             <div>
               <button
                 className="showTable_remove"
-                // value={i}
-                id={i.toString()}
-                onClick={() => deleteRowFromArr(row.id)}
+                id={index.toString()}
+                onClick={() => deleteRowFromArr(index)}
               >
                 X
               </button>

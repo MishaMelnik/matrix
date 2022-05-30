@@ -1,8 +1,10 @@
-const INITIAL_STATE = {
+import { initialStore, storeReducer } from '../../../models/models';
+
+const INITIAL_STATE: initialStore = {
   table: [],
 };
 
-const matrixStoreReducer = (state = INITIAL_STATE, action: any) => {
+const matrixStoreReducer = (state = INITIAL_STATE, action: storeReducer) => {
   switch (action.type) {
     case 'SET_TABLE':
       return {

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import './Form.scss';
-import matrixActions from '../../store/appStores/matrixStore/matrixAction';
 import getTable from '../../store/appStores/matrixStore/selector';
 import { useSelector } from 'react-redux';
-import { form } from '../../models/models';
+import percentCalculation from '../function/percentCalculation';
 
 const Form = () => {
   const table = useSelector(getTable);
@@ -12,10 +11,10 @@ const Form = () => {
   const [cell, setCells] = useState(0);
 
   const createTable = () => {
-    const newTable: form[][] = [];
+    const newTable = [];
 
     for (let i = 0; i < rows; i += 1) {
-      const row: form[] = [];
+      const row = [];
 
       for (let j = 0; j < columns; j += 1) {
         let amount = Math.floor(Math.random() * 1000);
@@ -28,8 +27,6 @@ const Form = () => {
           amount,
           percent: '',
           id: Math.random(),
-          hover: false,
-          showPercent: false,
           columns,
           rows,
           cell,
@@ -67,21 +64,6 @@ const Form = () => {
     matrix.push(row);
     percentCalculation(matrix);
   };
-  // eslint-disable-next-line require-jsdoc
-  function percentCalculation(newTab: form[][]) {
-    const newTable = [...newTab];
-
-    for (let i = 0; i < newTable.length; i += 1) {
-      const sum = newTab[i].reduce((acc, num) => acc + +num.amount, 0);
-
-      for (let j = 0; j < newTable[i].length; j += 1) {
-        newTable[i][j].percent = ((+newTable[i][j].amount / sum) * 100).toFixed(1);
-      }
-    }
-
-    matrixActions.setTable(newTable);
-  }
-
   return (
     <div className="platform">
       <div className="platform_container">
