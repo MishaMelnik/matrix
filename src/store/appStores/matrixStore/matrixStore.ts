@@ -9,6 +9,11 @@ const matrixStoreReducer = (state = INITIAL_STATE, action: any) => {
         ...state,
         table: action.table,
       };
+    case 'DELETE_ROW':
+      return {
+        ...state,
+        table: action.table,
+      };
     default:
       return state;
   }

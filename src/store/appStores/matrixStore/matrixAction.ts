@@ -9,6 +9,12 @@ const matrixActions = {
       table,
     });
   },
+  deleteRow: async (table: any) => {
+    dispatch({
+      type: 'DELETE_ROW',
+      table,
+    });
+  },
 };
 
 export default matrixActions;

@@ -3,38 +3,60 @@
   border-radius: 15px;
   color: #fff;
   height: fit-content;
+  text-align: center;
 }
 
 .showTable {
-  padding: 30px 20px;
+  padding: 5px 20px;
   width: fit-content;
   margin: 0 auto;
   background-color: #94d341;
-  margin-top: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px -3px rgba(0,0,0,0.75);
   position: relative;
 
-  &--none {
+  &-none {
     display: none;
   }
 
-  &__list {
+  &_list {
     border-radius: 15px;
   }
+  &_span{
+    position: relative;
+    top: 23px;
+    right: 35px;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  &_sums{
+    position: absolute;
+    top: 45px;
+    right: 78px;
+    font-size: 20px;
+    font-weight: bold;
+  }
 
-  &__item {
+  &_item {
     margin-bottom: 5px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    cursor: pointer;
 
     &:last-of-type {
       margin-bottom: 0;
     }
   }
+  &_avg{
+    position: absolute;
+    left: 15px;
+    bottom: 24px;
+    font-size: 20px;
+    font-weight: bold;
+  }
 
-  &__amount {
+  &_amount {
     font-size: 20px;
     display: inline-block;
     margin: 0 5px;
@@ -42,12 +64,14 @@
     padding: 0;
     width: 80px;
     height: 40px;
-    background-color: rgba(255, 255, 255, 50);
+    background-color: white;
     position: relative;
+    cursor: pointer;
 
-    &:hover {
-      cursor: pointer;
+    &:hover{
+      background-color: darkseagreen;
     }
+
 
     &:active {
       color: green;
@@ -56,12 +80,12 @@
       border-radius: 10px;
     }
 
-    &--near {
+    &-near {
       background-color: #2b648fad;
     }
   }
 
-  &__procent {
+  &_percent {
     position: absolute;
     width: 100%;
     background-color: #2b648fad;
@@ -69,12 +93,12 @@
     left: 0;
     font-size: 0;
 
-    &--none {
+    &-none {
       display: none;
     }
   }
 
-  &__sum {
+  &_sum {
     @include greenBlock;
     padding: 5px 10px;
     width: 60px;
@@ -85,7 +109,7 @@
     }
   }
 
-  &__remove {
+  &_remove {
     background-color: rgba(255, 255, 255, 0);
     border: 0;
     color: rgb(255, 0, 0);
@@ -101,15 +125,51 @@
     }
   }
 
-  &__average {
-    margin-top: 10px;
+  &_average {
     justify-content: flex-start;
     border: none;
     position: relative;
-
+    cursor: pointer;
     &-item {
       @include greenBlock;
     }
-
+  }
+  &_rowNumber {
+    top: 80px;
+    left: 0;
+    list-style: none;
+    position: absolute;
+    padding: 0 10px;
+    width: 30px;
+    margin: 0;
+    justify-content: flex-start;
+    border: none;
+    cursor: default;
+    &-item {
+      @include greenBlock;
+    }
+  }
+  &_rowSpan{
+    padding: 5px 10px;
+    font-size: 20px;
+    display: inline-block;
+    margin: 0 0 8.6px 0;
+    border: 0;
+    width: 30px;
+    height: 40px;
+    background-color: white;
+    position: relative;
+    cursor: pointer;
+  }
+  &_rowAverage {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    justify-content: flex-start;
+    border: none;
+    position: relative;
+    cursor: pointer;
+    &-item {
+      @include greenBlock;
+    }
   }
 }

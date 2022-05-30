@@ -1,22 +1,22 @@
-export interface Data {
+export interface form {
   id: number;
   columns: number;
   rows: number;
-  cells: number;
-  length: number;
-  newMatrix: object;
+  cell: number;
+  amount: number;
+  percent: string;
+  hover: boolean;
+  showPercent: boolean;
 }
-export interface reduce {
-  acc: number;
-  num: number;
-}
+
 export interface matrix {
-  table: any;
-  average: any;
-  amountClick: any;
-  removeRow: any;
-  hoverAmount: any;
-  endHoverAmount: any;
-  showPercent: any;
-  endShowPercent: any;
+  a: number;
+  b: number;
+  i: string;
+  id: number;
+  value: number;
+  rowId: number;
+  amount: number;
+  percent: string;
+  acc: number;
 }

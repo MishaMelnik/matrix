@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
-import './Platform.scss';
+import './Form.scss';
 import matrixActions from '../../store/appStores/matrixStore/matrixAction';
 import getTable from '../../store/appStores/matrixStore/selector';
 import { useSelector } from 'react-redux';
+import { form } from '../../models/models';
 
-const Platform = () => {
+const Form = () => {
   const table = useSelector(getTable);
   const [columns, setColumns] = useState(0);
   const [rows, setRows] = useState(0);
   const [cell, setCells] = useState(0);
 
-  const createTable = (columns: number, rows: number) => {
-    const newTable = [];
-    let id = 0;
+  const createTable = () => {
+    const newTable: form[][] = [];
 
     for (let i = 0; i < rows; i += 1) {
-      const row = [];
+      const row: form[] = [];
 
       for (let j = 0; j < columns; j += 1) {
         let amount = Math.floor(Math.random() * 1000);
@@ -26,30 +26,32 @@ const Platform = () => {
 
         row.push({
           amount,
-          percent: 0,
-          id,
+          percent: '',
+          id: Math.random(),
           hover: false,
           showPercent: false,
+          columns,
+          rows,
+          cell,
         });
-
-        id += 1;
       }
 
       newTable.push(row);
     }
 
-    matrixActions.setTable(newTable);
+    percentCalculation(newTable);
     setColumns(0);
     setRows(0);
     setCells(0);
   };
-  const addRow = (columns: number) => {
-    const newTable = [...table];
+  const addRow = () => {
+    const matrix = [...table];
+    const newTabl = matrix.flat(1);
+    const newTable = newTabl[0];
 
     const row = [];
-    let id = table[table.length - 1][columns - 1].id + 1;
 
-    for (let j = 0; j < columns; j += 1) {
+    for (let j = 0; j < newTable?.columns; j += 1) {
       let amount = Math.floor(Math.random() * 1000);
 
       if (amount < 100) {
@@ -57,20 +59,28 @@ const Platform = () => {
       }
 
       row.push({
-        ...table[0][0],
         amount,
-        id,
+        id: Math.random(),
       });
-
-      id += 1;
     }
 
-    newTable.push(row);
+    matrix.push(row);
+    percentCalculation(matrix);
+  };
+  // eslint-disable-next-line require-jsdoc
+  function percentCalculation(newTab: form[][]) {
+    const newTable = [...newTab];
+
+    for (let i = 0; i < newTable.length; i += 1) {
+      const sum = newTab[i].reduce((acc, num) => acc + +num.amount, 0);
+
+      for (let j = 0; j < newTable[i].length; j += 1) {
+        newTable[i][j].percent = ((+newTable[i][j].amount / sum) * 100).toFixed(1);
+      }
+    }
 
     matrixActions.setTable(newTable);
-    setColumns(0);
-    setRows(0);
-  };
+  }
 
   return (
     <div className="platform">
@@ -110,14 +120,14 @@ const Platform = () => {
           />
         </div>
         <div className="platform_button">
-          <button onClick={() => createTable(columns, rows)}>Create matrix</button>
+          <button onClick={() => createTable()}>Create matrix</button>
         </div>
-        <div className={table.length > 0 ? `platform_button1` : `platform_button-none`}>
-          <button onClick={() => addRow(columns)}>Add new row</button>
+        <div className={table?.length > 0 ? `platform_button1` : `platform_button-none`}>
+          <button onClick={() => addRow()}>Add new row</button>
         </div>
       </div>
     </div>
   );
 };
 
-export default Platform;
+export default Form;
