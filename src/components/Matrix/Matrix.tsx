@@ -1,30 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import './Matrix.scss';
-import getTable from '../../store/appStores/matrixStore/selector';
+// HOOKS
 import { useSelector } from 'react-redux';
+// REDUX
+import getTable from '../../store/appStores/matrixStore/selector';
 import matrixActions from '../../store/appStores/matrixStore/matrixAction';
-import percentCalculation from '../function/percentCalculation';
+// FUNCTIONS
+import percentCalculation from '../../functions/percentCalculation';
+// MODELS
 import { matrix } from '../../models/models';
+// SCSS
+import './Matrix.scss';
 
 const Matrix = () => {
   const table: Array<Array<matrix>> = useSelector(getTable);
   const [average, handleAverage] = useState<Array<number>>([]);
   const [column, setColumn] = useState<Array<number>>([]);
-  const [showCell, setShowCell] = useState(false);
-  const [showPercent, setShowPercent] = useState(false);
   const matrix = [...table];
-  const newTabl = matrix.flat(2);
-  const newMatrix = newTabl[0];
-  console.log(matrix);
+  const newTable = matrix.flat(2);
+  const newMatrix = newTable[0];
 
-  const deleteRowFromArr = (rowId: number) => {
+  const deleteRowFromArr = (index: number) => {
     const newTable = table.slice(0);
-    newTable.splice(rowId - 1, 1);
+    newTable.splice(index, 1);
     matrixActions.deleteRow(newTable);
   };
-  const showRowPercent = (index: number) => {
-    setShowPercent(true);
-    console.log(index);
+  const showPercent = (i: number) => {
+    const newArr = [...table];
+    newArr[i].map((el) => {
+      el.showPercent = true;
+    });
+  };
+  const endShowPercent = (i: number) => {
+    const newArr = [...table];
+    newArr[i].map((el) => {
+      el.showPercent = false;
+    });
+    matrixActions.setTable(newArr);
   };
   const amountClick = (id: number) => {
     for (let i = 0; i < matrix.length; i += 1) {
@@ -36,24 +47,23 @@ const Matrix = () => {
     }
     percentCalculation(matrix);
   };
-  const hoverAmount = () => {
-    setShowCell(true);
-    const hashAmountDelta = newTabl
-      .map((item) => ({
-        ...item,
-        amountDelta: Math.abs(item.amount - newMatrix.amount),
-      }))
-      .sort((a, b) => {
-        if (a.amountDelta < b.amountDelta) {
-          return -1;
-        }
-        if (a.amountDelta > b.amountDelta) {
-          return 1;
-        }
-        return 0;
-      })
-      .slice(0, newMatrix.cell);
-    console.log(hashAmountDelta);
+  const hoverAmount = (id: number) => {
+    newTable.sort((a, b) => a.amount - b.amount);
+    const index = newTable.findIndex((el) => el.id === id);
+    const indexPlus = newTable.indexOf(newTable[index + newMatrix.cell + 1]);
+    const indexMinus = newTable.indexOf(newTable[index - newMatrix.cell]);
+    const resultPlus = newTable.slice(index, indexPlus);
+    resultPlus.shift();
+    const resultMinus = newTable.slice(indexMinus, index);
+    const sumArr = resultPlus.concat(resultMinus);
+    sumArr.sort((a, b) => a.amount - b.amount);
+    const result = sumArr.slice(0, newMatrix.cell);
+    result.map((el) => (el.showCell = true));
+    console.log(result);
+  };
+  const endHoverAmount = () => {
+    matrix.map((el) => el.map((show) => (show.showCell = false)));
+    matrixActions.setTable(matrix);
   };
   useEffect(() => {
     if (table.length > 0) {
@@ -97,29 +107,27 @@ const Matrix = () => {
             {row?.map((show) => (
               <div className="showTable_row" key={Math.random()}>
                 <button
-                  // value={show.id}
                   id={show.id.toString()}
-                  onMouseEnter={() => hoverAmount()}
-                  onMouseLeave={() => setShowCell(false)}
                   className={
-                    !showCell ? 'showTable_amount' : 'showTable_amount showTable_amount-near'
+                    !show.showCell ? 'showTable_amount' : 'showTable_amount showTable_amount-near'
                   }
+                  onMouseEnter={() => hoverAmount(show.id)}
+                  onMouseLeave={() => endHoverAmount()}
                   onClick={() => amountClick(show.id)}
-                  // onClick={(event) => amountClick(event)}
                 >
-                  <span>{!showPercent ? show.amount : `${show.percent} %`}</span>
+                  <span>{!show.showPercent ? show.amount : `${show.percent} %`}</span>
                   <div
                     style={{ height: `${+show.percent}%` }}
-                    className={!showPercent ? 'showTable_percent-none' : 'showTable_percent'}
+                    className={!show.showPercent ? 'showTable_percent-none' : 'showTable_percent'}
                   ></div>
                 </button>
               </div>
             ))}
             <span
-              className="showTable_sum"
               id={index.toString()}
-              onMouseEnter={() => showRowPercent(index)}
-              onMouseLeave={() => setShowPercent(false)}
+              className="showTable_sum"
+              onMouseOver={() => showPercent(index)}
+              onMouseOut={() => endShowPercent(index)}
             >
               {row?.reduce((acc, current) => acc + current.amount, 0)}
             </span>

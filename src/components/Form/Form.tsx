@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import './Form.scss';
-import getTable from '../../store/appStores/matrixStore/selector';
+// HOOKS
 import { useSelector } from 'react-redux';
-import percentCalculation from '../function/percentCalculation';
+// REDUX
+import getTable from '../../store/appStores/matrixStore/selector';
+// FUNCTIONS
+import percentCalculation from '../../functions/percentCalculation';
+// SCSS
+import './Form.scss';
 
 const Form = () => {
   const table = useSelector(getTable);
@@ -27,6 +31,8 @@ const Form = () => {
           amount,
           percent: '',
           id: Math.random(),
+          showCell: false,
+          showPercent: false,
           columns,
           rows,
           cell,
@@ -58,6 +64,7 @@ const Form = () => {
       row.push({
         amount,
         id: Math.random(),
+        columns: newTable.columns,
       });
     }
 

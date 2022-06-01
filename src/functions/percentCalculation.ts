@@ -1,5 +1,7 @@
-import matrixActions from '../../store/appStores/matrixStore/matrixAction';
-import { matrix } from '../../models/models';
+// REDUX
+import matrixActions from '../store/appStores/matrixStore/matrixAction';
+// MODELS
+import { matrix } from '../models/models';
 // eslint-disable-next-line require-jsdoc
 function percentCalculation(newTab: Array<Array<matrix>>) {
   const newTable = [...newTab];

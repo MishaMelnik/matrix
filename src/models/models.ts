@@ -11,4 +11,6 @@ export interface matrix {
   percent: string;
   columns: number;
   cell: number;
+  showCell: boolean;
+  showPercent: boolean;
 }
